@@ -15,7 +15,11 @@ endforeach()
 
 enable_testing()
 
-add_executable(tests tests/test_main.cpp)
+add_executable(tests
+    tests/test_main.cpp
+    src/nvme_device.cpp
+)
+target_include_directories(tests PRIVATE ${CMAKE_SOURCE_DIR})
 target_link_libraries(tests gtest_main gmock)
 
 include(GoogleTest)

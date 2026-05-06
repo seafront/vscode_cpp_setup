@@ -1,5 +1,7 @@
 #include <gtest/gtest.h>
+#include "src/nvme_device.h"
 
-TEST(SampleTest, BasicAssertion) {
-    EXPECT_EQ(1 + 1, 2);
+TEST(NvmeDeviceTest, CanConstruct) {
+    NvmeDevice dev;
+    SUCCEED();
 }
