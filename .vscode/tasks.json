@@ -17,6 +17,20 @@
             "problemMatcher": []
         },
         {
+            "label": "CMake Clean Build",
+            "type": "shell",
+            "command": "if (Test-Path build) { Remove-Item -Recurse -Force build }; & 'C:/Program Files/CMake/bin/cmake.exe' --preset windows-clangcl-debug; if ($LASTEXITCODE -eq 0) { & 'C:/Program Files/CMake/bin/cmake.exe' --build --preset debug }",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "group": "build",
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            },
+            "problemMatcher": ["$msCompile"]
+        },
+        {
             "label": "CMake Build",
             "type": "shell",
             "command": "C:/Program Files/CMake/bin/cmake.exe",
