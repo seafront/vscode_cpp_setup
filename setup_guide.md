@@ -211,6 +211,20 @@ Remove-Item -Recurse "googletest-1.15.2", "gtest.zip"
             "problemMatcher": []
         },
         {
+            "label": "CMake Clean Build",
+            "type": "shell",
+            "command": "if (Test-Path build) { Remove-Item -Recurse -Force build }; & 'C:/Program Files/CMake/bin/cmake.exe' --preset windows-clangcl-debug; if ($LASTEXITCODE -eq 0) { & 'C:/Program Files/CMake/bin/cmake.exe' --build --preset debug }",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "group": "build",
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            },
+            "problemMatcher": ["$msCompile"]
+        },
+        {
             "label": "CMake Build",
             "type": "shell",
             "command": "C:/Program Files/CMake/bin/cmake.exe",
@@ -235,6 +249,7 @@ Remove-Item -Recurse "googletest-1.15.2", "gtest.zip"
 
 - cmake 전체 경로를 사용한다. VS Code 터미널은 시스템 PATH를 그대로 상속하지 않을 수 있다.
 - `Ctrl+Shift+B` → CMake Build 실행 (CMake Configure 자동 선행)
+- **CMake Clean Build**: `build/` 디렉토리를 삭제 후 configure + build 전체 수행. `lib/gtest/`는 삭제되지 않는다.
 
 ### 2-5. `.vscode/launch.json`
 
@@ -269,7 +284,10 @@ Remove-Item -Recurse "googletest-1.15.2", "gtest.zip"
 |---|---|
 | 빌드 | `Ctrl+Shift+B` |
 | 빌드 + 디버그 시작 | `F5` |
+| Clean Build | `Ctrl+Shift+P` → Tasks: Run Task → **CMake Clean Build** |
 | 터미널에서 테스트 실행 | `ctest --test-dir build --build-config Debug --output-on-failure` |
+
+> **Clean Build**: `build/` 디렉토리를 완전히 삭제하고 처음부터 빌드한다. `lib/gtest/`의 pre-built 라이브러리는 삭제되지 않으므로 googletest 재빌드 없이 빠르게 완료된다.
 
 빌드 결과물: `build/Debug/tests.exe`
 
