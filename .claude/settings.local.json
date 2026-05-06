@@ -10,7 +10,10 @@
       "PowerShell(Remove-Item *)",
       "PowerShell(& \"D:\\\\vscode_project\\\\vscode_cpp_settup\\\\build\\\\Debug\\\\main.exe\")",
       "Bash(git rm *)",
-      "Bash(git add *)"
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)",
+      "PowerShell(& \"C:\\\\Program Files\\\\CMake\\\\bin\\\\ctest.exe\" --test-dir \"D:\\\\vscode_project\\\\vscode_cpp_settup\\\\build\" --build-config Debug --output-on-failure 2>&1)"
     ]
   }
 }
