@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(& \"C:\\\\Program Files\\\\LLVM\\\\bin\\\\clang++.exe\" -fcolor-diagnostics -fansi-escape-codes -g \"D:\\\\vscode_project\\\\vscode_cpp_settup\\\\main.cpp\" -o \"D:\\\\vscode_project\\\\vscode_cpp_settup\\\\main.exe\" 2>&1; if \\($LASTEXITCODE -eq 0\\) { Write-Output \"Build successful\" } else { Write-Output \"Build failed with exit code $LASTEXITCODE\" })",
+      "PowerShell(cmake *)",
+      "PowerShell(reg query *)",
+      "PowerShell(winget install *)",
+      "PowerShell($cmake = \"C:\\\\Program Files\\\\CMake\\\\bin\\\\cmake.exe\"; & $cmake --version 2>$null; Write-Output \"---clang-cl---\"; Test-Path \"C:\\\\Program Files\\\\LLVM\\\\bin\\\\clang-cl.exe\"; Get-Item \"C:\\\\Program Files\\\\LLVM\\\\bin\\\\clang-cl.exe\" -ErrorAction SilentlyContinue | Select-Object FullName; Write-Output \"---MSVC---\"; Get-ChildItem \"C:\\\\Program Files\\\\Microsoft Visual Studio\\\\18\\\\Community\\\\VC\\\\Tools\\\\MSVC\" -ErrorAction SilentlyContinue | Select-Object Name | Sort-Object Name -Descending | Select-Object -First 3)",
+      "PowerShell([System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture)",
+      "PowerShell(Remove-Item *)",
+      "PowerShell(& \"D:\\\\vscode_project\\\\vscode_cpp_settup\\\\build\\\\Debug\\\\main.exe\")",
+      "Bash(git rm *)",
+      "Bash(git add *)"
+    ]
+  }
+}
