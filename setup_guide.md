@@ -1,5 +1,5 @@
 # VS Code C++ Build Environment Setup Guide
-## MSVC + Clang (ClangCL) + CMake on Windows x64
+## MSVC + Clang (ClangCL) + CMake + GTest/GMock on Windows x64
 
 ---
 
@@ -12,6 +12,7 @@
 | Clang (VS 번들) | 20.1.8 (`VC/Tools/Llvm/x64/bin/clang-cl.exe`) |
 | MSVC | 14.50.35717 |
 | CMake | 4.3.2 |
+| GoogleTest / GMock | v1.15.2 (pre-built) |
 
 ---
 
@@ -49,9 +50,20 @@ winget install Kitware.CMake
 
 ```
 project-root/
-├── main.cpp
 ├── CMakeLists.txt
 ├── CMakePresets.json
+├── lib/
+│   └── gtest/
+│       ├── include/
+│       │   ├── gtest/
+│       │   └── gmock/
+│       └── lib/
+│           ├── gtest.lib
+│           ├── gtest_main.lib
+│           ├── gmock.lib
+│           └── gmock_main.lib
+├── tests/
+│   └── test_main.cpp
 └── .vscode/
     ├── c_cpp_properties.json
     ├── tasks.json
@@ -62,15 +74,54 @@ project-root/
 
 ```cmake
 cmake_minimum_required(VERSION 3.20)
-project(HelloVSCode CXX)
+project(MyProject CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-add_executable(main main.cpp)
+# Pre-built googletest v1.15.2 (ClangCL, Debug)
+foreach(_lib gtest gtest_main gmock gmock_main)
+    add_library(${_lib} STATIC IMPORTED)
+    set_target_properties(${_lib} PROPERTIES
+        IMPORTED_LOCATION "${CMAKE_SOURCE_DIR}/lib/gtest/lib/${_lib}.lib"
+        INTERFACE_INCLUDE_DIRECTORIES "${CMAKE_SOURCE_DIR}/lib/gtest/include"
+    )
+endforeach()
+
+enable_testing()
+
+add_executable(tests tests/test_main.cpp)
+target_link_libraries(tests gtest_main gmock)
+
+include(GoogleTest)
+gtest_discover_tests(tests)
 ```
 
-- `add_executable(main main.cpp)` → 소스 파일이 늘어나면 `main.cpp` 뒤에 추가
+- `lib/gtest/`에 pre-built 라이브러리를 저장하므로 빌드 시 googletest를 매번 컴파일하지 않는다.
+- 테스트 소스 파일이 늘어나면 `add_executable(tests ...)` 에 추가한다.
+
+#### lib/gtest/ 구성 방법 (최초 1회)
+
+이미 repo에 포함되어 있으므로 clone 후 별도 작업 불필요.
+새로 구성하는 경우:
+
+```powershell
+# 1. googletest 소스 다운로드 및 빌드
+Invoke-WebRequest -Uri "https://github.com/google/googletest/archive/refs/tags/v1.15.2.zip" -OutFile "gtest.zip"
+Expand-Archive "gtest.zip" -DestinationPath "."
+
+# CMakeLists.txt에 add_subdirectory로 임시 추가 후 빌드
+# build/lib/Debug/ 에 .lib 생성됨
+
+# 2. 헤더와 .lib 복사
+New-Item -ItemType Directory -Force "lib\gtest\include", "lib\gtest\lib"
+Copy-Item -Recurse "googletest-1.15.2\googletest\include\gtest" "lib\gtest\include\gtest"
+Copy-Item -Recurse "googletest-1.15.2\googlemock\include\gmock" "lib\gtest\include\gmock"
+Copy-Item "build\lib\Debug\*.lib" "lib\gtest\lib\"
+
+# 3. 소스 정리
+Remove-Item -Recurse "googletest-1.15.2", "gtest.zip"
+```
 
 ### 2-2. `CMakePresets.json`
 
@@ -106,9 +157,9 @@ add_executable(main main.cpp)
 }
 ```
 
-- `generator`: VS 버전에 맞게 변경. VS 2022 이면 `"Visual Studio 17 2022"`
+- `generator`: VS 버전에 맞게 변경. VS 2022이면 `"Visual Studio 17 2022"`
 - `toolset`: `"ClangCL"` → VS 번들 clang-cl 사용 (1-1에서 설치한 컴포넌트)
-- 빌드 결과물: `build/Debug/main.exe`
+- 빌드 결과물: `build/Debug/tests.exe`
 
 ### 2-3. `.vscode/c_cpp_properties.json`
 
@@ -136,7 +187,7 @@ add_executable(main main.cpp)
 ```
 
 - `compilerPath`: VS 번들 clang-cl 경로. VS 버전이 다르면 경로의 `18`을 맞게 수정
-- IntelliSense가 MSVC 표준 라이브러리 헤더를 자동으로 인식
+- IntelliSense가 MSVC 표준 라이브러리 헤더와 `lib/gtest/include`를 자동으로 인식
 
 ### 2-4. `.vscode/tasks.json`
 
@@ -195,7 +246,7 @@ add_executable(main main.cpp)
             "name": "C/C++: CMake ClangCL Debug",
             "type": "cppvsdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/build/Debug/main.exe",
+            "program": "${workspaceFolder}/build/Debug/tests.exe",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
@@ -212,15 +263,26 @@ add_executable(main main.cpp)
 
 ---
 
-## 3. 빌드 및 디버그
+## 3. 빌드 및 테스트 실행
 
-| 동작 | 단축키 |
+| 동작 | 방법 |
 |---|---|
 | 빌드 | `Ctrl+Shift+B` |
 | 빌드 + 디버그 시작 | `F5` |
-| 디버그 없이 실행 | `Ctrl+F5` |
+| 터미널에서 테스트 실행 | `ctest --test-dir build --build-config Debug --output-on-failure` |
 
-빌드 결과물: `build/Debug/main.exe`
+빌드 결과물: `build/Debug/tests.exe`
+
+### 테스트 파일 추가 방법
+
+`tests/` 디렉토리에 파일을 추가하고 `CMakeLists.txt`의 `add_executable`에 등록한다.
+
+```cmake
+add_executable(tests
+    tests/test_main.cpp
+    tests/test_foo.cpp   # 추가
+)
+```
 
 ---
 
@@ -228,7 +290,7 @@ add_executable(main main.cpp)
 
 ### `'iostream' file not found`
 - **원인**: `C:\Program Files\LLVM\bin\clang++.exe` (standalone LLVM) 사용 중. 이 clang++은 MSVC 표준 라이브러리 헤더가 없다.
-- **해결**: VS 번들 `clang-cl.exe`를 사용해야 한다. `c_cpp_properties.json`의 `compilerPath`와 tasks의 컴파일러가 올바르게 설정되어 있는지 확인.
+- **해결**: VS 번들 `clang-cl.exe`를 사용해야 한다. `c_cpp_properties.json`의 `compilerPath`가 올바르게 설정되어 있는지 확인.
 
 ### `cmake 용어가 인식되지 않습니다`
 - **원인**: VS Code 터미널의 PATH에 cmake가 없음.
