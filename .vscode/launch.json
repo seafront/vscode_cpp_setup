@@ -5,7 +5,7 @@
             "name": "C/C++: CMake ClangCL Debug",
             "type": "cppvsdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/build/Debug/main.exe",
+            "program": "${workspaceFolder}/build/Debug/tests.exe",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
