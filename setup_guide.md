@@ -29,15 +29,13 @@
 
 > VS 설치 후 나중에 컴포넌트를 추가하려면: Visual Studio Installer → Visual Studio 2022 → 수정(Modify) → 개별 구성 요소 탭 → "Clang" 검색 후 체크
 
-### 1-2. CMake 설치
+### 1-2. CMake
 
-```powershell
-winget install Kitware.CMake
-```
+별도 설치 불필요. VS 2022에 CMake가 번들로 포함되어 있다.
 
-설치 경로: `C:\Program Files\CMake\bin\cmake.exe`
+설치 경로: `C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe`
 
-> CMake는 시스템 PATH에 자동 등록되지 않을 수 있다. VS Code tasks.json에서는 전체 경로를 사용한다.
+> tasks.json에서는 전체 경로를 사용한다. VS Code 터미널은 시스템 PATH를 그대로 상속하지 않을 수 있다.
 
 ### 1-3. VS Code 확장
 
@@ -198,7 +196,7 @@ Remove-Item -Recurse "googletest-1.15.2", "gtest.zip"
         {
             "label": "CMake Configure",
             "type": "shell",
-            "command": "C:/Program Files/CMake/bin/cmake.exe",
+            "command": "C:/Program Files/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/bin/cmake.exe",
             "args": ["--preset", "windows-clangcl-debug"],
             "options": {
                 "cwd": "${workspaceFolder}"
@@ -213,7 +211,7 @@ Remove-Item -Recurse "googletest-1.15.2", "gtest.zip"
         {
             "label": "CMake Clean Build",
             "type": "shell",
-            "command": "if (Test-Path build) { Remove-Item -Recurse -Force build }; & 'C:/Program Files/CMake/bin/cmake.exe' --preset windows-clangcl-debug; if ($LASTEXITCODE -eq 0) { & 'C:/Program Files/CMake/bin/cmake.exe' --build --preset debug }",
+            "command": "if (Test-Path build) { Remove-Item -Recurse -Force build }; & 'C:/Program Files/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/bin/cmake.exe' --preset windows-clangcl-debug; if ($LASTEXITCODE -eq 0) { & 'C:/Program Files/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/bin/cmake.exe' --build --preset debug }",
             "options": {
                 "cwd": "${workspaceFolder}"
             },
@@ -227,7 +225,7 @@ Remove-Item -Recurse "googletest-1.15.2", "gtest.zip"
         {
             "label": "CMake Build",
             "type": "shell",
-            "command": "C:/Program Files/CMake/bin/cmake.exe",
+            "command": "C:/Program Files/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/bin/cmake.exe",
             "args": ["--build", "--preset", "debug"],
             "options": {
                 "cwd": "${workspaceFolder}"
@@ -312,7 +310,7 @@ add_executable(tests
 
 ### `cmake 용어가 인식되지 않습니다`
 - **원인**: VS Code 터미널의 PATH에 cmake가 없음.
-- **해결**: `tasks.json`의 `command`를 `cmake` 대신 `C:/Program Files/CMake/bin/cmake.exe` 전체 경로로 지정.
+- **해결**: `tasks.json`의 `command`를 `cmake` 대신 `C:/Program Files/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/bin/cmake.exe` 전체 경로로 지정.
 
 ### `MSB8020: ClangCL에 대한 빌드 도구를 찾을 수 없습니다`
 - **원인**: VS에 "Windows용 C++ Clang 도구" 컴포넌트가 미설치.

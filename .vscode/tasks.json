@@ -4,7 +4,7 @@
         {
             "label": "CMake Configure",
             "type": "shell",
-            "command": "C:/Program Files/CMake/bin/cmake.exe",
+            "command": "C:/Program Files/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/bin/cmake.exe",
             "args": ["--preset", "windows-clangcl-debug"],
             "options": {
                 "cwd": "${workspaceFolder}"
@@ -19,7 +19,7 @@
         {
             "label": "CMake Clean Build",
             "type": "shell",
-            "command": "if (Test-Path build) { Remove-Item -Recurse -Force build }; & 'C:/Program Files/CMake/bin/cmake.exe' --preset windows-clangcl-debug; if ($LASTEXITCODE -eq 0) { & 'C:/Program Files/CMake/bin/cmake.exe' --build --preset debug }",
+            "command": "if (Test-Path build) { Remove-Item -Recurse -Force build }; & 'C:/Program Files/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/bin/cmake.exe' --preset windows-clangcl-debug; if ($LASTEXITCODE -eq 0) { & 'C:/Program Files/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/bin/cmake.exe' --build --preset debug }",
             "options": {
                 "cwd": "${workspaceFolder}"
             },
@@ -33,7 +33,7 @@
         {
             "label": "CMake Build",
             "type": "shell",
-            "command": "C:/Program Files/CMake/bin/cmake.exe",
+            "command": "C:/Program Files/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/bin/cmake.exe",
             "args": ["--build", "--preset", "debug"],
             "options": {
                 "cwd": "${workspaceFolder}"
