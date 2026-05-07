@@ -4,7 +4,7 @@
     {
       "name": "windows-clangcl-debug",
       "displayName": "Windows ClangCL Debug",
-      "generator": "Visual Studio 18 2026",
+      "generator": "Visual Studio 17 2022",
       "binaryDir": "${sourceDir}/build",
       "architecture": {
         "value": "x64",

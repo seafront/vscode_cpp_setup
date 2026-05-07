@@ -8,17 +8,17 @@
 | 항목 | 버전 |
 |---|---|
 | OS | Windows 11 x64 |
-| Visual Studio | Community 2026 (v18.5) |
-| Clang (VS 번들) | 20.1.8 (`VC/Tools/Llvm/x64/bin/clang-cl.exe`) |
-| MSVC | 14.50.35717 |
-| CMake | 4.3.2 |
-| GoogleTest / GMock | v1.15.2 (pre-built) |
+| Visual Studio | Community 2022 (v17.11) |
+| Clang (VS 번들) | 17.0.3 (`VC/Tools/Llvm/x64/bin/clang-cl.exe`) |
+| MSVC | 14.41 |
+| CMake | VS 2022 번들 (`Common7/IDE/CommonExtensions/Microsoft/CMake`) |
+| GoogleTest / GMock | v1.15.2 (pre-built, ClangCL Debug) |
 
 ---
 
 ## 1. 필수 설치
 
-### 1-1. Visual Studio Community 2026
+### 1-1. Visual Studio Community 2022
 [https://visualstudio.microsoft.com/](https://visualstudio.microsoft.com/) 에서 설치.
 
 설치 시 워크로드 선택:
@@ -27,7 +27,7 @@
 개별 구성 요소에서 추가 체크:
 - **Windows용 C++ Clang 도구** (`Microsoft.VisualStudio.Component.VC.Llvm.ClangToolset`)
 
-> VS 설치 후 나중에 컴포넌트를 추가하려면: Visual Studio Installer → 수정(Modify) → 개별 구성 요소 탭 → "Clang" 검색 후 체크
+> VS 설치 후 나중에 컴포넌트를 추가하려면: Visual Studio Installer → Visual Studio 2022 → 수정(Modify) → 개별 구성 요소 탭 → "Clang" 검색 후 체크
 
 ### 1-2. CMake 설치
 
@@ -132,7 +132,7 @@ Remove-Item -Recurse "googletest-1.15.2", "gtest.zip"
     {
       "name": "windows-clangcl-debug",
       "displayName": "Windows ClangCL Debug",
-      "generator": "Visual Studio 18 2026",
+      "generator": "Visual Studio 17 2022",
       "binaryDir": "${sourceDir}/build",
       "architecture": {
         "value": "x64",
@@ -157,7 +157,7 @@ Remove-Item -Recurse "googletest-1.15.2", "gtest.zip"
 }
 ```
 
-- `generator`: VS 버전에 맞게 변경. VS 2022이면 `"Visual Studio 17 2022"`
+- `generator`: VS 버전에 맞게 변경. VS 2019이면 `"Visual Studio 16 2019"`
 - `toolset`: `"ClangCL"` → VS 번들 clang-cl 사용 (1-1에서 설치한 컴포넌트)
 - 빌드 결과물: `build/Debug/tests.exe`
 
@@ -176,7 +176,7 @@ Remove-Item -Recurse "googletest-1.15.2", "gtest.zip"
                 "UNICODE",
                 "_UNICODE"
             ],
-            "compilerPath": "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/clang-cl.exe",
+            "compilerPath": "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/Llvm/x64/bin/clang-cl.exe",
             "cStandard": "c17",
             "cppStandard": "c++17",
             "intelliSenseMode": "windows-clang-x64"
@@ -186,7 +186,7 @@ Remove-Item -Recurse "googletest-1.15.2", "gtest.zip"
 }
 ```
 
-- `compilerPath`: VS 번들 clang-cl 경로. VS 버전이 다르면 경로의 `18`을 맞게 수정
+- `compilerPath`: VS 번들 clang-cl 경로. VS 버전이 다르면 경로의 `2022`를 맞게 수정
 - IntelliSense가 MSVC 표준 라이브러리 헤더와 `lib/gtest/include`를 자동으로 인식
 
 ### 2-4. `.vscode/tasks.json`
